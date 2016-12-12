@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 
-namespace PureConfig
+namespace PureConfig.Net
 {
-    public partial class Parser
+    internal partial class PureConfig
     {
         enum ConfigType
         {
@@ -18,7 +18,7 @@ namespace PureConfig
         }
 
         Dictionary<string, ConfigData> config;
-        private bool ParseFile(System.IO.TextReader lines)
+        protected bool ParseFile(System.IO.TextReader lines)
         {
             Dictionary<string, TokenDef[]> tokenisers= CreateTokenizers();
             List<List<Token>> tokens = new List<List<Token>>();

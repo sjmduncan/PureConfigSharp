@@ -2,7 +2,7 @@ using System;
 using System.IO;
 
 
-namespace PureConfig
+namespace PureConfig.Net
 {
     public struct Quantity
 	{
@@ -17,11 +17,11 @@ namespace PureConfig
 		}
 	}
 
-    public partial class Parser
+    internal partial class PureConfig
     {
         public string FilePath{ get; private set; }
 
-        public Parser(string configFile)
+        public PureConfig(string configFile)
         {
             if(!File.Exists(configFile))
                 throw new Exception("File '" + configFile + "' does not exist");

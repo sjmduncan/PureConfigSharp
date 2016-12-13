@@ -4,7 +4,7 @@ using System.IO;
 
 namespace PureConfigNet
 {
-    public struct Quantity
+	public struct Quantity
 	{
 		
 		public string unit;
@@ -16,24 +16,24 @@ namespace PureConfigNet
 		}
 	}
 
-    public partial class PureConfig
-    {
-        public string FilePath{ get; private set; }
+	public partial class PureConfig
+	{
+		public string FilePath{ get; private set; }
 
-        public PureConfig(string configFile)
-        {
-            if(!File.Exists(configFile))
-                throw new Exception("File '" + configFile + "' does not exist");
-            
-            FilePath = configFile;
+		public PureConfig(string configFile)
+		{
+			if(!File.Exists(configFile))
+				throw new Exception("File '" + configFile + "' does not exist");
 
-            using(StreamReader file = new StreamReader(File.OpenRead(configFile)))
-            {
-                ParseFile(file);
-            }
-        }
+			FilePath = configFile;
 
-        public T Get<T>(string id)
+			using(StreamReader file = new StreamReader(File.OpenRead(configFile)))
+			{
+				ParseFile(file);
+			}
+		}
+
+		public T Get<T>(string id)
 		{
 			ConfigData data = TryGetVal(id);
 			if(typeof(T) == typeof(double) || typeof(T) == typeof(float))
@@ -44,12 +44,12 @@ namespace PureConfigNet
 			else if(typeof(T) == typeof(int))
 			{
 				if(data.type != ConfigType.Decimal)
-					throw new Exception("Requested " + typeof(T) + " but key is of type "  + data.type);
+					throw new Exception("Requested " + typeof(T) + " but key is of type " + data.type);
 			}
 			else if(typeof(T) == typeof(string))
 			{
-            if(data.type != ConfigType.String)
-					throw new Exception("Requested " + typeof(T) + " but key is of type "  + data.type);
+			if(data.type != ConfigType.String)
+					throw new Exception("Requested " + typeof(T) + " but key is of type " + data.type);
 			}
 			else if(typeof(T) == typeof(Quantity))
 			{
@@ -59,7 +59,7 @@ namespace PureConfigNet
 			else if(typeof(T) == typeof(bool))
 			{
 				if(data.type != ConfigType.Bool)
-					throw new Exception("Requested " + typeof(T) + " but key is of type "  + data.type);
+					throw new Exception("Requested " + typeof(T) + " but key is of type " + data.type);
 			}
 			else
 			{
@@ -69,6 +69,6 @@ namespace PureConfigNet
 		}
 
 
-    }
+	}
 
 }

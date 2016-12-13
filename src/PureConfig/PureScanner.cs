@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 
-namespace PureConfig.Net
+namespace PureConfigNet
 {
-    internal partial class PureConfig
+    public partial class PureConfig
     {
         enum ConfigType
         {
@@ -50,6 +50,7 @@ namespace PureConfig.Net
                     continue;
                 ConfigData val = new ConfigData();
                 string fullKey = "";
+                Token lastToken = null;
 
                 foreach(Token t in line)
                 {
@@ -61,6 +62,18 @@ namespace PureConfig.Net
                             else
                                 fullKey += "." + t.data;
                             break;
+                        case TokenType.KEYQQ:
+                            if(fullKey == "")
+                                fullKey += t.data.Substring(1, t.data.Length-2);
+                            else
+                                fullKey += "." + t.data.Substring(1, t.data.Length-2);
+                            break;
+                        case TokenType.KEYQ:
+                            if(fullKey == "")
+                                fullKey += t.data.Substring(1, t.data.Length-2);
+                            else
+                                fullKey += "." + t.data.Substring(1, t.data.Length-2);
+                            break;
                         case TokenType.BOOLFALSE:
                             val.data = false;
                             val.type = ConfigType.Bool;
@@ -71,6 +84,14 @@ namespace PureConfig.Net
                             break;
                         case TokenType.STRING:
                             val.data = t.data;
+                            val.type = ConfigType.String;
+                            break;
+                        case TokenType.STRINGQ:
+                            val.data = t.data.Substring(1, t.data.Length-2);
+                            val.type = ConfigType.String;
+                            break;
+                        case TokenType.STRINGQQ:
+                            val.data = t.data.Substring(1, t.data.Length-2);
                             val.type = ConfigType.String;
                             break;
                         case TokenType.NUMBER:
@@ -86,12 +107,19 @@ namespace PureConfig.Net
                             double.TryParse(m.Value, out q.val);
                             m=m.NextMatch();
                             q.unit = m.Value;
-                            //FIXME: q.multiplier = ParseQuantityUnit(q.unit);
                             val.data = q;
                             val.type = ConfigType.Quantity;
                             break;
                     }
+                    if(t.tokenType != TokenType.WHITESPACE)
+                        lastToken = t;
                 }
+                if(lastToken?.tokenType == TokenType.ASSIGN)
+                {
+                    val.type = ConfigType.String;
+                    val.data = "";
+                }
+
                 dict.Add(fullKey, val);
             }
             return dict;
@@ -185,7 +213,7 @@ namespace PureConfig.Net
         }
         private enum TokenType
         {
-                ASSIGN,REFERENCE,WHITESPACE,STRING,COMMENT,NUMBER,QUANTITY,KEY,ARRAY,BOOLTRUE,BOOLFALSE
+                ASSIGN,REFERENCE,WHITESPACE,STRING,STRINGQQ,STRINGQ,COMMENT,NUMBER,QUANTITY,KEY,KEYQ,KEYQQ,ARRAY,BOOLTRUE,BOOLFALSE
         }
         private Dictionary<string, TokenDef[]> CreateTokenizers()
         {
@@ -198,6 +226,8 @@ namespace PureConfig.Net
             };
             TokenDef[] key = new TokenDef[]
             {
+                new TokenDef(TokenType.KEYQ,           @"'[^""\\]*(?:\\.[^""\\]*)*'"),
+                new TokenDef(TokenType.KEYQQ,           @"""[^""\\]*(?:\\.[^""\\]*)*"""),
                 new TokenDef(TokenType.KEY,           @"[^#=\n]+(?==)|[^#=\n]+(?=\s=)")
                 
             };
@@ -211,11 +241,12 @@ namespace PureConfig.Net
 
             TokenDef[] val = new TokenDef[]
             {
-                new TokenDef(TokenType.BOOLTRUE,        @"true(?=\s?)"),
-                new TokenDef(TokenType.BOOLFALSE,       @"false(?=\s?)"),
-                new TokenDef(TokenType.STRING,          @"'[^""\\]*(?:\\.[^""\\]*)*'"),
-                new TokenDef(TokenType.STRING,          @"""[^""\\]*(?:\\.[^""\\]*)*"""),
-                new TokenDef(TokenType.NUMBER,          @"-?[0-9]*\.?[0-9]+(?!\S)"),
+                new TokenDef(TokenType.BOOLTRUE,        @"true(?!\S)"),
+                new TokenDef(TokenType.BOOLFALSE,       @"false(?!\S)"),
+                new TokenDef(TokenType.STRINGQ,         @"'[^""\\]*(?:\\.[^""\\]*)*'"),
+                new TokenDef(TokenType.STRINGQQ,        @"""[^""\\]*(?:\\.[^""\\]*)*"""),
+                new TokenDef(TokenType.NUMBER,          @"-?[0-9]*\.?[0-9]+(?!\S)\s*$"),
+                new TokenDef(TokenType.NUMBER,          @"-?[0-9]+\.?[0-9]*(?!\S)\s*$"),
                 new TokenDef(TokenType.QUANTITY,        @"-?[0-9]*\.?[0-9]+[A-z]{1,2}(?!\S)"),
 
                 new TokenDef(TokenType.STRING,          @"[^#]+|[^#]+(?=\s)")
@@ -263,29 +294,5 @@ namespace PureConfig.Net
                 this.match = matchstr;
             }
         }
-        private static double ParseQuantityUnit(string unit)
-        {
-            switch(unit)
-			{
-				case "Y": return 1e24;
-				case "Z": return 1e21;
-				case "E": return 1e18;
-				case "P": return 1e15;
-				case "T": return 1e12;
-				case "G": return 1e9; 
-				case "M": return 1e6;
-				case "k": return 1e3;
-				case "m": return 1e-3;
-				case "u": return 1e-6;
-				case "n": return 1e-9;
-				case "p": return 1e-12;
-				case "f": return 1e-15;
-				case "a": return 1e-18;
-				case "z": return 1e-21;
-				case "y": return 1e-24;
-				default: throw new Exception("Non-SI unit: " + unit);
-			}
-        }
-
     }
 }

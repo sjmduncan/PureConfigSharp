@@ -1,0 +1,3 @@
+[submodule "test/PureConfig.Tests/spec"]
+	path = test/PureConfig.Tests/spec
+	url = git@github.com:sjmduncan/pureconfig.git

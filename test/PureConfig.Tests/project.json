@@ -9,7 +9,8 @@
     "dotnet-test-xunit": "1.0.0-rc2-192208-24",
     "PureConfig": {
       "target": "project"
-      }
+      },
+    "Newtonsoft.Json": "9.0.1"
   },
   "testRunner": "xunit",
   "frameworks": {

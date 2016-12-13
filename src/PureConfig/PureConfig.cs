@@ -2,22 +2,21 @@ using System;
 using System.IO;
 
 
-namespace PureConfig.Net
+namespace PureConfigNet
 {
     public struct Quantity
 	{
 		
 		public string unit;
 		public double val;
-		public double multiplier;
 
 		public override string ToString()
 		{
-			return string.Format("{0}{1}(x{2})", val, unit, multiplier);
+			return string.Format("{0}{1}", val, unit);
 		}
 	}
 
-    internal partial class PureConfig
+    public partial class PureConfig
     {
         public string FilePath{ get; private set; }
 
@@ -40,31 +39,31 @@ namespace PureConfig.Net
 			if(typeof(T) == typeof(double) || typeof(T) == typeof(float))
 			{
 				if(data.type != ConfigType.Decimal)
-					throw new Exception("bad data");
+					throw new Exception("Requested " + typeof(T) + " but key is of type " + data.type);
 			}
 			else if(typeof(T) == typeof(int))
 			{
 				if(data.type != ConfigType.Decimal)
-					throw new Exception("Requested int but type is ");
+					throw new Exception("Requested " + typeof(T) + " but key is of type "  + data.type);
 			}
 			else if(typeof(T) == typeof(string))
 			{
             if(data.type != ConfigType.String)
-					throw new Exception("Requested int but type is ");
+					throw new Exception("Requested " + typeof(T) + " but key is of type "  + data.type);
 			}
 			else if(typeof(T) == typeof(Quantity))
 			{
 				if(data.type != ConfigType.Quantity)
-					throw new Exception("Requested int but type is ");
+					throw new Exception("Requested " + typeof(T) + " but key is of type " + data.type);
 			}
 			else if(typeof(T) == typeof(bool))
 			{
 				if(data.type != ConfigType.Bool)
-					throw new Exception("Requested int but type is ");
+					throw new Exception("Requested " + typeof(T) + " but key is of type "  + data.type);
 			}
 			else
 			{
-				throw new Exception("Requested data type is not supported");
+				throw new Exception("Requested data type (" + typeof(T) + ") is not supported");
 			}
 			return (T)Convert.ChangeType(data.data, typeof(T));
 		}

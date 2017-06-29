@@ -1,6 +1,6 @@
 # PureConfigSharp
 
-A (partial) C# (.NET Core) implementation of [pureconfig](https://github.com/pureconfig/pureconfig).
+A (partial) C# (.NET Core) implementation of [pureformat](https://github.com/pureformat/pureformat).
 
 # Usage
 

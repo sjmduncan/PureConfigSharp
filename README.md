@@ -1,20 +1,13 @@
-# PureConfigSharp
+# Abandoned
 
-A (partial) C# (.NET Core) implementation of [pureformat](https://github.com/pureformat/pureformat).
+[pureformat](https://github.com/pureformat/pureformat) seems to be dead.
 
-# Usage
 
-```
-PureConfig.Parser pure = new PureConfig.Parser("config.pure");
+## PureConfigSharp
 
-// Get config values
-int port = pure.Get<int>("server.port");
-string logPath = pure.Get<string>("server.log_path");
-int bufferLength = pure.Get<"main.buffer length");
+An incomplete C# (.NET Core) implementation of [pureformat](https://github.com/pureformat/pureformat).
 
-```
-
-# Progress
+## What Works
 
 - [X] Int, Double, String, Quantity, Bool
 - [ ] Int, Double overflow
@@ -30,5 +23,3 @@ int bufferLength = pure.Get<"main.buffer length");
 - [ ] Write to config files
 - [ ] Meaningful error messages during parse failures
 - [X] Meaningful error messages when failing to retrieve a value
-
-...
